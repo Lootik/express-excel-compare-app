@@ -17,7 +17,20 @@
   },
   "homepage": "https://github.com/Lootik/express-excel-compare-app",
   "dependencies": {
-    "excel-export": "^0.5.1",
-    "express": "^4.14.0"
+    "angular": "^1.5.7",
+    "angular-resource": "^1.5.7",
+    "angular-route": "^1.5.7",
+    "angular-ui-router": "^0.3.1",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "gulp": "^3.9.1",
+    "gulp-util": "^3.0.7",
+    "jade": "^1.11.0",
+    "jade-loader": "^0.8.0",
+    "multiparty": "^4.1.2",
+    "raw-loader": "^0.5.1",
+    "underscore": "^1.8.3",
+    "webpack": "^1.13.1",
+    "xlsx": "^0.8.0"
   }
 }

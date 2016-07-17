@@ -1,0 +1,16 @@
+form
+    input(
+        type='file'
+        name='test'
+        file-model="compareFiles.file1"
+    )
+    input(
+        file-model="compareFiles.file2"
+        type='file'
+        name='test'
+    )
+    
+button(class="btn", ng-click='test()').
+    submit
+ec-compare-result(ng-hide='!differences').
+    
