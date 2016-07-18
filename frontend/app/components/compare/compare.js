@@ -9,12 +9,25 @@ function compareWidget() {
         template: require('./templates/compareWidget.jade'),
         controller: function ($scope, compareService) {
             $scope.test = function () {
+                $scope.differences = null;
                 var fd = new FormData();
+                var re = /(.xls|.xlsx)$/;
+                var file1Name = $scope.compareFiles.file1.name;
+                var file2Name = $scope.compareFiles.file2.name;
+                if (!re.test(file1Name) || !re.test(file2Name)) {
+                    alert('Files should be .xls or .xlsx format!');
+                    return;
+                }
                 fd.append('file1', $scope.compareFiles.file1);
                 fd.append('file2', $scope.compareFiles.file2);
                 compareService.compareFiles(fd,
                     function (res) {
-                        $scope.differences = res.differences;
+                        if (_.isEmpty(res.differences)) {
+                            alert("These files are the same");
+                        } else {
+                            $scope.differences = res.differences;
+                        }
+
                     }, function (err) {});
             };
         }
@@ -42,6 +55,7 @@ function ecCompareResult() {
         template: require('./templates/compareResultDiretive.jade')
     };
 
-};
+}
+;
 
 
