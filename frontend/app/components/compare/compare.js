@@ -12,8 +12,13 @@ function compareWidget() {
                 $scope.differences = null;
                 var fd = new FormData();
                 var re = /(.xls|.xlsx)$/;
-                var file1Name = $scope.compareFiles.file1.name;
-                var file2Name = $scope.compareFiles.file2.name;
+                try {
+                    var file1Name = $scope.compareFiles.file1.name;
+                    var file2Name = $scope.compareFiles.file2.name;
+                } catch (err) {
+                    alert('Two files should be specified');
+                    return;
+                }
                 if (!re.test(file1Name) || !re.test(file2Name)) {
                     alert('Files should be .xls or .xlsx format!');
                     return;
