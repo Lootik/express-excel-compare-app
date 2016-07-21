@@ -7,8 +7,13 @@ var gulp = require('gulp'),
 var vendor = [
     'angular',
     'angular-route',
+    'angular-animate',
+    'angular-aria',
     'angular-ui-router',
-    'angular-resource'
+    'angular-resource',
+    'angular-material',
+    'jquery',
+    'bootstrap'
 ];
 
 

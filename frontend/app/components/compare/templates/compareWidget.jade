@@ -1,16 +1,22 @@
-form
-    input(
-        type='file'
-        name='test'
-        file-model="compareFiles.file1"
-    )
-    input(
-        file-model="compareFiles.file2"
-        type='file'
-        name='test'
-    )
-    
-button(class="btn", ng-click='test()').
-    submit
+div(flex layout="row" layout-align="center center")  
+    div(flex=50 layout-align="center center")  
+        form
+        div.md-padding(flex)
+            label PVS Excel File Output:
+                input(
+                    type='file'
+                    name='test'
+                    file-model="compareFiles.file1"
+                    )
+        div.md-padding(flex)
+            label Assure Excel File Output:
+                input(
+                    file-model="compareFiles.file2"
+                    type='file'
+                    name='test'
+                   )
+    div(flex=50 layout-align="center center")  
+        md-button.md-primary.md-raised(ng-click='test()') Submit
+
 ec-compare-result(ng-hide='!differences').
-    
+ 

@@ -1,11 +1,26 @@
-table(border="1" ng-repeat="(key, value) in differences")
-    caption {{ value.page }}
-    thead 
-        th Index
-        th File1Value
-        th File2Value
-    tr(ng-repeat="(key, value) in value.idexes")
-        td {{value.index}}
-        td {{value.file1Value.value}}
-        td {{value.file2Value.value}}
+//table(border="1" ng-repeat="(key, value) in differences")
+//    caption {{ value.page }}
+//    thead 
+//        th Index
+//        th File1Value
+//        th File2Value
+//    tr(ng-repeat="(key, value) in value.idexes")
+//        td {{value.index}}
+//        td {{value.file1Value.value}}
+//        td {{value.file2Value.value}}
+//
 
+
+
+
+table.table.table-striped(ng-repeat="(key, value) in differences")
+        thead.thead-inverse
+            tr
+                th Index
+                th PVS output
+                th Assure output
+        tbody.table-striped
+            tr(ng-repeat="(key, value) in value.idexes")
+                td(md-cell) {{value.index}}
+                td(md-cell) {{value.file1Value.value}}
+                td(md-cell) {{value.file2Value.value}}
