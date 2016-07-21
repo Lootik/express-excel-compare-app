@@ -1,7 +1,6 @@
 
 
 (function () {
-    require('style!./header.scss');
     'use strict';
     angular.module('EC.header', [])
         .directive('ecHeader', ecHeader);
