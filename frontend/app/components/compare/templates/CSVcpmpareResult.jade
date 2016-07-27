@@ -1,0 +1,9 @@
+table.table.table-striped
+        thead.thead-inverse
+            tr
+                th(md-cell) №
+                th(md-cell ng-repeat="model in header") {{model}}
+        tbody.table-striped
+            tr(ng-repeat="model in differences track by $index") 
+                td(md-cell) {{ $index+1 }}
+                td(md-cell ng-repeat="test in model track by $index"  ng-class="{differences:test.indexOf('->')>0}") {{ test }}

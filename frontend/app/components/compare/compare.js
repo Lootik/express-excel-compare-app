@@ -1,10 +1,14 @@
+require('./compare.scss');
+
 (function () {
     angular.module('EC.compare', [])
         .directive('ecCompareList', ecCompareList)
         .directive('ecCompareWidget', compareWidget)
         .directive("fileModel", ['$parse', fileModel])
-        .directive('ecCompareResult', ecCompareResult);
-
+        .directive('ecCompareResult', ecCompareResult)
+        .directive('ecCompareByWorksheet', ecCompareByWorksheet)
+        .directive('ecCompareCsv', ecCompareCsv)
+        .directive('ecCsvCompareResult', ecCsvCompareResult);
     function ecCompareList() {
         return {
             restrict: 'E',
@@ -34,7 +38,7 @@
                     }
                     fd.append('file1', $scope.compareFiles.file1);
                     fd.append('file2', $scope.compareFiles.file2);
-                    compareService.compareFiles(fd,
+                    compareService.compareExelFiles(fd,
                         function (res) {
                             if (res.differences === false) {
                                 alert('Can not compare files, they have too different structure');
@@ -73,5 +77,72 @@
             template: require('./templates/compareResultDiretive.jade')
         };
     }
+
+    function ecCompareByWorksheet() {
+        return {
+            restrict: 'E',
+            template: require('./templates/compareByWorksheet.jade'),
+            controller: function ($scope, compareService) {
+                function isValid(file) {
+                    var re = /(.xls|.xlsx)$/;
+                    if (!re.test(fileName)) {
+                        return {
+                            status: false,
+                            message: 'Files should be .xls or .xlsx format!'
+                        };
+                    }
+                    return {
+                        status: true
+                    };
+                }
+            }
+
+        };
+    }
+
+    function ecCompareCsv() {
+        return {
+            restrict: 'E',
+            template: require('./templates/compareCsv.jade'),
+            controller: function ($scope, compareService) {
+                $scope.test = function () {
+                    $scope.differences = null;
+                    var fd = new FormData();
+                    var re = /.csv$/;
+                    try {
+                        var file1Name = $scope.compareFiles.file1.name;
+                        var file2Name = $scope.compareFiles.file2.name;
+                    } catch (err) {
+                        alert('Two files should be specified');
+                        return;
+                    }
+                    if (!re.test(file1Name) || !re.test(file2Name)) {
+                        alert('Files should be .csv format!');
+                        return;
+                    }
+                    fd.append('file1', $scope.compareFiles.file1);
+                    fd.append('file2', $scope.compareFiles.file2);
+                    compareService.compareCsv(fd,
+                        function (res) {
+                            var compareData = res.differences.data;
+                            $scope.header = compareData[0];
+                            var diffsClone = _.clone(compareData);
+                            diffsClone.splice(0, 1);
+                            $scope.differences = diffsClone;
+                        }, function (err) {
+
+                    });
+                };
+            }
+        };
+    }
+    function ecCsvCompareResult() {
+        return {
+            restrict: 'E',
+            template: require('./templates/CSVcpmpareResult.jade')
+        };
+    }
+
+
 
 })();

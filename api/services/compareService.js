@@ -1,4 +1,6 @@
 var _ = require('underscore');
+var fs = require('fs');
+var coopy = require('coopyhx');
 module.exports = {
     possiblePrefixes: [
         'output_'
@@ -19,7 +21,6 @@ module.exports = {
         _.each(commonSheets, function (commonSheet) {
             var sheetName1 = null,
                 sheetName2 = null;
-
             if (typeof commonSheet === 'object') {
                 isDifferent = true;
                 sheetName1 = commonSheet.realSheetName;
@@ -91,7 +92,30 @@ module.exports = {
             });
         });
         return result;
+    },
+    // CSV
+    compareCsv: function (csv1, csv2) {
+        var parsedFile1 = this.parseCsv(csv1);
+        var parsedFile2 = this.parseCsv(csv2);
+        var table1 = new coopy.CoopyTableView(parsedFile1);
+        var table2 = new coopy.CoopyTableView(parsedFile2);
+        var alignment = coopy.compareTables(table1, table2).align();
+        var data_diff = [];
+        var table_diff = new coopy.CoopyTableView(data_diff);
+        var flags = new coopy.CompareFlags();
+        flags.always_show_order = true;
+        flags.show_unchanged_columns = true;
+        flags.show_unchanged = true;
+        var highlighter = new coopy.TableDiff(alignment, flags);
+        highlighter.hilite(table_diff);
+        return table_diff;
+    },
+    parseCsv: function (csv) {
+        var result = [];
+        var fileArray = fs.readFileSync(csv[0].path).toString().split("\n");
+        _.each(fileArray, function (fileLine) {
+            result.push(fileLine.split(','));
+        });
+        return result;
     }
-
-
 };

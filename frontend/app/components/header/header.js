@@ -15,6 +15,9 @@
                     case 'main':
                         $scope.currentNavItem = 'main';
                         break;
+                    case 'main.compareCsv':
+                        $scope.currentNavItem = 'compareCsv';
+                        break;
                 }
 
             }

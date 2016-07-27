@@ -11,6 +11,14 @@ EC.config(function ($stateProvider, $urlRouterProvider) {
         .state("main.pvsVsAssure", {
             url: "compare/pvs-vs-assure",
             template: '<ec-compare-widget></ec-compare-widget>'
+        })
+        .state("main.byWorkcheets", {
+            url: "compare/by-worksheets",
+            template: '<ec-compare-by-worksheet></ec-compare-by-worksheet>'
+        })
+        .state("main.compareCsv", {
+            url: "compare/csv",
+            template: '<ec-compare-csv></ec-compare-by-csv>'
         });
     $urlRouterProvider.otherwise("/");
 });

@@ -15,5 +15,15 @@ module.exports = {
             var result = compareService.compare(workbook1, workbook2);
             res.send({differences: result});
         });
+    },
+    compareCsv: function (req, res) {
+//        compareService.test();
+        var form = new multiparty.Form();
+        form.parse(req, function (err, fields, files) {
+            var file1 = files.file1,
+                file2 = files.file2;
+            var result = compareService.compareCsv(file1, file2);
+            res.send({differences: result});
+        });
     }
 };
