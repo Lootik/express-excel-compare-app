@@ -56,16 +56,21 @@ require('./compare.scss');
         };
     }
 
-    function fileModel($parse) {
+    function fileModel($parse, $scope) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
-                var model = $parse(attrs.fileModel);
-                var modelSetter = model.assign;
+                var model = $parse(attrs.fileModel),
+                    modelSetter = model.assign;
                 element.bind('change', function () {
                     scope.$apply(function () {
                         modelSetter(scope, element[0].files[0]);
                     });
+                });
+                scope.$on('clearFileModel', function (e, arg) {
+                    if (attrs.fileModel === arg.fileModel) {
+                        angular.element(element).val(null);
+                    }
                 });
             }
         };
@@ -82,19 +87,85 @@ require('./compare.scss');
         return {
             restrict: 'E',
             template: require('./templates/compareByWorksheet.jade'),
-            controller: function ($scope, compareService) {
-                function isValid(file) {
-                    var re = /(.xls|.xlsx)$/;
-                    if (!re.test(fileName)) {
-                        return {
-                            status: false,
-                            message: 'Files should be .xls or .xlsx format!'
-                        };
+            controller: function ($scope, $rootScope, compareService) {
+                $scope.$watch('file1', function () {
+                    $scope.difference = $scope.file1Sheets = null;
+                    if ($scope.file1) {
+                        if (!$scope.isExcelFile($scope.file1, 'file1')) {
+                            $rootScope.$broadcast('clearFileModel', {fileModel: 'file1'});
+                            alert('File should be .xls or .xlsx format!');
+                            $scope.file1 = null;
+                            return;
+                        }
+                        var fd = new FormData();
+                        fd.append('file', $scope.file1);
+                        compareService.getExcelFileSheets(fd,
+                            function (res) {
+                                $scope.file1Sheets = res.sheets;
+                            },
+                            function (err) {});
+                    } else {
+                        $scope.file1 = null;
                     }
-                    return {
-                        status: true
-                    };
-                }
+                });
+                $scope.$watch('file2', function () {
+                    $scope.difference = $scope.file2Sheets = null;
+                    if ($scope.file2) {
+                        if (!$scope.isExcelFile($scope.file2, 'file2')) {
+                            $rootScope.$broadcast('clearFileModel', {fileModel: 'file2'});
+                            alert('File should be .xls or .xlsx format!');
+                            $scope.file2 = null;
+                            return;
+                        }
+                        var fd = new FormData();
+                        fd.append('file', $scope.file2);
+                        compareService.getExcelFileSheets(fd,
+                            function (res) {
+                                $scope.file2Sheets = res.sheets;
+                            },
+                            function (err) {});
+                    } else {
+                        $scope.file2 = null;
+                    }
+                });
+                $scope.$watch('activeSheet1', function () {
+                    $scope.difference = null;
+                });
+                $scope.$watch('activeSheet2', function () {
+                    $scope.difference = null;
+                });
+
+                $scope.setActive = function (event, index, isFile1) {
+                    isFile1 ? $scope.activeSheet1 = index : $scope.activeSheet2 = index;
+                };
+
+                $scope.isSheetsSelected = function () {
+                    return _.isNumber($scope.activeSheet1) && _.isNumber($scope.activeSheet2);
+                };
+                $scope.compare = function () {
+                    var fd = new FormData();
+                    fd.append('file1', $scope.file1);
+                    fd.append('file2', $scope.file2);
+                    fd.append('file1Sheet', $scope.file1Sheets[$scope.activeSheet1]);
+                    fd.append('file2Sheet', $scope.file2Sheets[$scope.activeSheet2]);
+                    compareService.compareExelFilesBySheets(fd,
+                        function (res) {
+                            if (_.isEmpty(res.difference)) {
+                                alert("These sheets are the same!");
+                                $scope.difference = null;
+                            } else {
+                                $scope.difference = res.difference;
+                                $scope.file1Name = res.file1Name;
+                                $scope.file2Name = res.file2Name;
+                            }
+
+                        }, function (err) {});
+                };
+                $scope.isExcelFile = function (file) {
+                    var re = /(.xls|.xlsx)$/;
+                    var fileName = file.name;
+                    return re.test(fileName);
+                };
             }
 
         };
@@ -142,7 +213,4 @@ require('./compare.scss');
             template: require('./templates/CSVcpmpareResult.jade')
         };
     }
-
-
-
 })();

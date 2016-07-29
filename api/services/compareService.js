@@ -117,5 +117,35 @@ module.exports = {
             result.push(fileLine.split(','));
         });
         return result;
+    },
+    compareBySheet: function (workbook1, workbook2, workbook1Sheet, workbook2Sheet) {
+        var me = this,
+            workBook1Data = workbook1.Sheets[workbook1Sheet],
+            workBook2Data = workbook2.Sheets[workbook2Sheet],
+            commonIndexes = this.getCommonSheetIndexes(workBook1Data, workBook2Data),
+            result = [];
+        _.each(commonIndexes, function (index) {
+            var isSetFile1Cell = !_.isEmpty(workBook1Data[index]);
+            var isSetFile2Cell = !_.isEmpty(workBook2Data[index]);
+            var file1Value = isSetFile1Cell && workBook1Data[index].v ? workBook1Data[index].v : 'NULL';
+            var file2Value = isSetFile2Cell && workBook2Data[index].v ? workBook2Data[index].v : 'NULL';
+            if (file1Value != file2Value) {
+                result.push(me.buildCellCompareResult(index, file1Value, file2Value));
+            }
+        });
+        return result;
+    },
+    getCommonSheetIndexes: function (workBook1Data, workBook2Data) {
+        return  _.union(this.parseKeys(workBook1Data), this.parseKeys(workBook2Data));
+    },
+    parseKeys: function (obj) {
+        return _.keys(obj);
+    },
+    buildCellCompareResult: function (index, cell1Value, cell2Value) {
+        return {
+            index: index,
+            file1Value: cell1Value,
+            file2Value: cell2Value
+        };
     }
 };

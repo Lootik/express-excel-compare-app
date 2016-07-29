@@ -11,6 +11,15 @@ EC.factory('compareResource', ['$resource', function ($resource) {
                     }
                 }).compare(params, success, error);
             },
+            compareExelFilesBySheets: function (params, success, error) {
+                $resource(config.API + '/compare-excel/by-sheets', {}, {
+                    compare: {
+                        method: 'POST',
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }
+                }).compare(params, success, error);
+            },
             compareCsvFiles: function (params, success, error) {
                 $resource(config.API + '/compare/csv', {}, {
                     compare: {
@@ -19,6 +28,16 @@ EC.factory('compareResource', ['$resource', function ($resource) {
                         headers: {'Content-Type': undefined}
                     }
                 }).compare(params, success, error);
+            },
+            getExcelFileSheets: function (params, success, error) {
+                $resource(config.API + '/parse-excel/cheets', {}, {
+                    fetch: {
+                        method: 'POST',
+                        transformRequest: angular.identity,
+                        headers: {'Content-Type': undefined}
+                    }
+                }).fetch(params, success, error);
             }
+
         };
     }]);

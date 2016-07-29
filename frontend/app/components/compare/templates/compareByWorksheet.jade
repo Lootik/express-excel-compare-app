@@ -1,16 +1,45 @@
-div(flex)  
-        form
-            div.md-padding(flex)
-                label Input File №1
-                    input(
-                        type='file'
-                        name='test'
-                        file-model="file1",
-                        )
-            div.md-padding(flex)
-                label Input File №2
-                    input(
-                        file-model="file2"
-                        type='file'
-                        name='test',
-                       )
+.container
+    div.row 
+            form
+             div.col-xs-6
+                div.col-xs-6.col-xs-offset-3
+                    label File1 Input:
+                        input(
+                            type='file'
+                            file-model="file1"
+                            )
+             div.col-xs-6
+                div.col-xs-6.col-xs-offset-3
+                    label  File2 Input:
+                        input(
+                            file-model="file2"
+                            type='file'
+                           )
+hr(ng-show='file1 || file2')
+.container
+    div.row 
+        div.col-xs-6
+            h4.text-center(ng-show='file1')  Select File1 Sheet To Compare
+            .list-group(ng-show='file1') 
+                a.list-group-item.text-center(href="javascript:;" ng-click='setActive($event, $index, true)' ng-repeat='model in file1Sheets track by $index' ng-class="{'active': activeSheet1==$index}") {{model}}
+        div.col-xs-6
+            h4.text-center(ng-show='file2')  Select File2 Sheet To Compare
+            .list-group(ng-show='file2') 
+                a.list-group-item.text-center(flex=100 layout="" href="javascript:;" ng-click='setActive($event, $index, false)' ng-repeat='model in file2Sheets track by $index' ng-class="{'active': activeSheet2==$index}") {{model}}
+    div.row(ng-show='isSheetsSelected() && file1 && file2')  
+            md-button.md-primary.md-raised.col-xs-2.col-xs-offset-5(ng-click='compare()') Compare
+hr(ng-show='difference && file1 && file2')
+.container(ng-show='difference && file1 && file2')
+
+    div.row 
+        table.table.table-striped.table-bordered.table-hover.table-sm
+                thead.thead-inverse
+                    tr
+                        th.text-center Index
+                        th.text-center {{file1Name}}
+                        th.text-center {{file2Name}}
+                tbody.table-striped
+                    tr.text-center(ng-repeat="model in difference")
+                        td.col-xs-1(md-cell) {{model.index}}
+                        td(md-cell) {{model.file1Value}}
+                        td(md-cell) {{model.file2Value}}
